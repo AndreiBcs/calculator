@@ -8,13 +8,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        Label label = new Label("JavaFX is running!");
-        StackPane root = new StackPane(label);
 
-        Scene scene = new Scene(root, 400, 300);
-        stage.setScene(scene);
-        stage.setTitle("My JavaFX App");
-        stage.show();
     }
 
     public static void main(String[] args) {
