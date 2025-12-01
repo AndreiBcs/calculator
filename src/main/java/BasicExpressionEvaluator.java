@@ -1,20 +1,18 @@
 import java.util.Stack;
 
-public class BasicExpressionEvaluator implements ExpressionEvaluator{
-    private String expression;
-    public BasicExpressionEvaluator(){
-        this.expression = getInput();
-    }
+public class BasicExpressionEvaluator implements ExpressionEvaluator {
+
     private boolean isOperator(char c) {
         return c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^';
-
     }
 
     private int precedence(char op) {
-        if (op == '+' || op == '-') return 1;
-        if (op == '*' || op == '/' || op=='%') return 2;
-        if(op=='^') return 3;
-        return 0;
+        return switch (op) {
+            case '+', '-' -> 1;
+            case '*', '/', '%' -> 2;
+            case '^' -> 3;
+            default -> 0;
+        };
     }
 
     private double applyOperation(double a, double b, char op) {
@@ -26,14 +24,15 @@ public class BasicExpressionEvaluator implements ExpressionEvaluator{
                 if (b == 0) throw new ArithmeticException("Division by zero");
                 yield a / b;
             }
-            case '%' ->{
+            case '%' -> {
                 if (b == 0) throw new ArithmeticException("Division by zero");
                 yield a % b;
             }
-            case '^'-> Math.pow(a, b);
+            case '^' -> Math.pow(a, b);
             default -> 0;
         };
     }
+
     @Override
     public double evaluate(String expression) throws Exception {
         Stack<Double> numbers = new Stack<>();
@@ -51,7 +50,7 @@ public class BasicExpressionEvaluator implements ExpressionEvaluator{
                     sb.append(expression.charAt(i));
                     i++;
                 }
-                i--; // face pas inapoi ca sa nu incrementeze dupa .
+                i--;
                 numbers.push(Double.parseDouble(sb.toString()));
             }
 
@@ -66,22 +65,26 @@ public class BasicExpressionEvaluator implements ExpressionEvaluator{
                     char op = operators.pop();
                     numbers.push(applyOperation(a, b, op));
                 }
-                operators.pop(); // da remove la '('
+                operators.pop();
             }
 
             else if (isOperator(c)) {
+
+                // FIX: ^ must be right-associative
                 while (!operators.isEmpty() &&
-                        precedence(operators.peek()) >= precedence(c)) {
+                        (precedence(operators.peek()) > precedence(c) ||
+                                (precedence(operators.peek()) == precedence(c) && c != '^'))) {
+
                     double b = numbers.pop();
                     double a = numbers.pop();
                     char op = operators.pop();
                     numbers.push(applyOperation(a, b, op));
                 }
+
                 operators.push(c);
             }
         }
 
-        // ce operatii raman
         while (!operators.isEmpty()) {
             double b = numbers.pop();
             double a = numbers.pop();
