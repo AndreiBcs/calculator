@@ -1,2 +1,2 @@
-tried Apache Maven for a small calculator app,
-not finished tho
+Tried Apache Maven for a small calculator app.
+The project is not finished.
