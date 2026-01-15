@@ -1,2 +1,2 @@
-Tried Apache Maven for a small calculator app.
-The project is not finished.
+tried java for a simple desktop ui calculator app;
+work in progress.
